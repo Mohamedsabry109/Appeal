@@ -6,6 +6,14 @@ cache:
     - $HOME/.cache/pip
     - $HOME/.ccache  # https://github.com/travis-ci/travis-ci/issues/5853
 
+env:
+  global:
+    # Doctr deploy key for Mohamedsabry109/Appeal
+    - secure: "UpkIJNnWEYN/P3zj/t3hzC24AI8ZE5q+QtoU4970sFfgaJ7eC2LzsBJO61IhEcRJfK2K88dtYVJ7AUDW0sdyLhe4N6j7Nxd1MiKu10/Mph9wEGKvC9a77n7yrhhusMtll1FxTe0zwV5ZjePzC2hGyhJMJMdx44cBZ4ZyMJIeaCuc7XIg84Elf1FAajAW7ckRz5ei6sMa0fEAZJuEw0vMX6akMxOVDiFbIgvJQZN6VSqWSo4jBLKIBu48xDAtMXWDbL8k9dBrdNwQkrRV9oX7u6sWpbjGkdZ7r0K6d0CWHXVB7C4b5tuJpHKtIXgDo+/GNtBkOTk9s/NTGCdNwU2WhatjEuzojISgGeAuuk1FXd/Xjikm9lAg4DyHfbD2Rpylq81hqG7WJqpLD3Ufy5Sb76NB2GzuG+LdrfNxU2h74y4rH+cJhhCyqJ7qV65nxnUriltVu10cX4/fnor8OVZYUlb00yZ+HKGmMAhBxrJLbQEgOLn/iU1tZPkdTy4yGC7yOOamDi5s/Mx/Xhd2pX104dL5mlQ/cyfOTCE//IW6b98PTtfM5tMNcySRm4IeTi8+IlPW4BwQa1u9wBMvXTaiA3TgxpaA7mMHKVcGxXBiEB30dATLIlDmlLp69IYfypuFjFGUlYj/Mznwys5p1feqCullVbxuGRf6AU2gMIf5yhg="
+
+
+
+
 install:
   # The versions of pip and numpy that come pre-installed are often too old and
   # can cause problems. Upgrade them.
@@ -21,3 +29,7 @@ script:
   - codecov  # Upload the report to codecov.
   - flake8  # Enforce code style ('relaxed' line length limit is set in .flake8 config file).
   - make -C docs html  # Build the documentation.
+  - set -e
+  - <Command to build your docs>
+  - pip install doctr
+  - doctr deploy --built-docs docs/build/html .
