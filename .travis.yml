@@ -30,6 +30,5 @@ script:
   - flake8  # Enforce code style ('relaxed' line length limit is set in .flake8 config file).
   - make -C docs html  # Build the documentation.
   - set -e
-  - <Command to build your docs>
   - pip install doctr
   - doctr deploy --built-docs docs/build/html .
