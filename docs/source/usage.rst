@@ -8,4 +8,3 @@ Start by importing Appeal project.
 
     import appeal_rl
 
-.. autofunction:: appeal_rl.refraction.snell
