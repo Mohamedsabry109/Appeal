@@ -30,23 +30,6 @@ appeal\_rl.agent module
    :show-inheritance:
    :private-members:
 
-appeal\_rl.main module
-----------------------
-
-.. automodule:: appeal_rl.main
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :private-members:
-
-appeal\_rl.refraction module
-----------------------------
-
-.. automodule:: appeal_rl.refraction
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :private-members:
 
 Module contents
 ---------------
