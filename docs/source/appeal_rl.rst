@@ -7,9 +7,7 @@ Subpackages
 .. toctree::
 
    appeal_rl.tests
-   appeal_rl.dqn
-   appeal_rl.config
-   appeal_rl.env
+
 
 Submodules
 ----------
