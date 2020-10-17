@@ -11,6 +11,7 @@ appeal\_rl.tests.conftest module
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
 
 appeal\_rl.tests.test\_examples module
 --------------------------------------
@@ -19,7 +20,7 @@ appeal\_rl.tests.test\_examples module
    :members:
    :undoc-members:
    :show-inheritance:
-
+   :private-members:
 
 Module contents
 ---------------
@@ -28,3 +29,4 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:

@@ -1,15 +1,21 @@
-.. Packaging Scientific Python documentation master file, created by
-   sphinx-quickstart on Thu Jun 28 12:35:56 2018.
+.. appeal_rl documentation master file, created by
+   sphinx-quickstart on Sat Oct 17 19:14:26 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Appeal project Documentation
-============================
+Welcome to appeal_rl's documentation!
+=====================================
 
 .. toctree::
    :maxdepth: 4
+   :caption: Contents:
 
-   installation
-   usage
-   release-history
-   min_versions
+   appeal_rl
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

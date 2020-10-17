@@ -5,12 +5,21 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    appeal_rl.tests
 
-
 Submodules
 ----------
+
+appeal\_rl.\_version module
+---------------------------
+
+.. automodule:: appeal_rl._version
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
 
 appeal\_rl.agent module
 -----------------------
@@ -19,6 +28,7 @@ appeal\_rl.agent module
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
 
 appeal\_rl.main module
 ----------------------
@@ -27,6 +37,7 @@ appeal\_rl.main module
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
 
 appeal\_rl.refraction module
 ----------------------------
@@ -35,7 +46,7 @@ appeal\_rl.refraction module
    :members:
    :undoc-members:
    :show-inheritance:
-
+   :private-members:
 
 Module contents
 ---------------
@@ -44,3 +55,4 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
