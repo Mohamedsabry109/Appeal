@@ -1,7 +1,7 @@
 from dqn.dqn import DQN
-from env.simulator import StdSimulatorEnv
-from env.utils import parse_args
-from env.constants import Constants
+from environment.simulator import StdSimulatorEnv
+from environment.utils import parse_args
+from environment.constants import Constants
 
 
 # To run the program:

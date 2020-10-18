@@ -4,7 +4,7 @@ import math
 import torch.optim as optim
 import torch.nn.functional as F
 from dqn.replay_memory import ReplayMemory
-from env.constants import Constants
+from environment.constants import Constants
 from dqn.model import Model
 import random
 import os
