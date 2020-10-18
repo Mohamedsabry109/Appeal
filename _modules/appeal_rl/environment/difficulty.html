@@ -1,0 +1,554 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>appeal_rl.environment.difficulty &mdash; Appeal project 0.post42+g0597177 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> Appeal project
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post42+g0597177
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Environment/env.html">env</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../min_versions.html">Minimum Version of Python and NumPy</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Appeal project</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>appeal_rl.environment.difficulty</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for appeal_rl.environment.difficulty</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">Constants</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">inv_map_tax_level</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">normalize_neg1_pos1</span>
+
+
+
+
+<div class="viewcode-block" id="Difficulty"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.difficulty.Difficulty">[docs]</a><span class="k">class</span> <span class="nc">Difficulty</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the class responsible for everything related to calculating a new difficulty of a taxonomy along with the rewards.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Difficulty.calculate_difficulty_reward"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.difficulty.Difficulty.calculate_difficulty_reward">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">calculate_difficulty_reward</span><span class="p">(</span><span class="n">cur_tax_level_mapped</span><span class="p">,</span> <span class="n">std_gt_level_mapped</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function calculates the total difficulty reward based on current taxonomies levels and student ground truth levels.</span>
+<span class="sd">        :param cur_tax_level_mapped: Array of current taxonomy levels written in letter form. i.e: E,M,H</span>
+<span class="sd">        :param std_gt_level_mapped: Array of student g.t. taxonomy levels written in letter form. i.e: E,M,H</span>
+<span class="sd">        :return: a [-1,1] normalized reward based on the designed excel sheet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Constants</span><span class="o">.</span><span class="n">NUM_TAX</span><span class="p">):</span>
+            <span class="n">difference</span> <span class="o">=</span> <span class="n">Constants</span><span class="o">.</span><span class="n">DIFFICULTY_DIFF</span><span class="p">[(</span><span class="n">cur_tax_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">std_gt_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span>
+            <span class="k">if</span> <span class="n">difference</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">reward</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">reward</span> <span class="o">+=</span> <span class="mf">0.23</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">difference</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">normalize_neg1_pos1</span><span class="p">(</span><span class="n">reward</span><span class="p">,</span> <span class="o">-</span><span class="n">Constants</span><span class="o">.</span><span class="n">NUM_TAX</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">NUM_TAX</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Difficulty.sample_exercise_E_stats_per_tax"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.difficulty.Difficulty.sample_exercise_E_stats_per_tax">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sample_exercise_E_stats_per_tax</span><span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">,</span> <span class="n">current_iteration</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function samples the statistics [time, hints, attempts, grade] for a student when his/her tax. level is &#39;E&#39;.</span>
+<span class="sd">        Coefficients are selected according to the excel sheet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Stats are: (Time, #Hints, #Attempts, Grade)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;E0&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&lt;=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tem&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&lt;=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tem&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;EM&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&lt;=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tem&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;E0&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&gt;</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tem&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&gt;</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tem&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;EM&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&gt;</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tem&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="n">tax</span> <span class="o">==</span> <span class="s1">&#39;E&#39;</span><span class="p">:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;This method samples only when taxonomy is E&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Numpy random functions are used for sampling between minimum and maximum.</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_E&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">t1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_max_E&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_E&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">t2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_E&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">t3</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_max_E&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_E&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">t4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_E&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">h1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_max_E&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_E&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">h2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_E&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">h3</span> <span class="o">*</span> <span class="p">(</span>
+                                          <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_max_E&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_E&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">h4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_E&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">a1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_max_E&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_E&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">a2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_E&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">a3</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_max_E&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_E&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">a4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_E&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">g1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_max_E&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_E&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">g2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_E&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">g3</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_max_E&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_E&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">g4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="Difficulty.calculate_stats_reward"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.difficulty.Difficulty.calculate_stats_reward">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">calculate_stats_reward</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">hints</span><span class="p">,</span> <span class="n">atts</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function calculates the [-1,1] normalized reward based on the statistics for a certain student.</span>
+<span class="sd">        For example, large time to solve an exam will have a small or negative reward while small time will have a large positive reward.</span>
+<span class="sd">        :param type: is the current tax. level.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">T_reward</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">normalize_neg1_pos1</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_&#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_max_&#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">])</span>
+        <span class="n">hints_reward</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">normalize_neg1_pos1</span><span class="p">(</span><span class="n">hints</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_&#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_max_&#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">])</span>
+        <span class="n">atts_reward</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">normalize_neg1_pos1</span><span class="p">(</span><span class="n">atts</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_&#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_max_&#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">])</span>
+        <span class="n">G_reward</span> <span class="o">=</span> <span class="n">normalize_neg1_pos1</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_&#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_max_&#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">])</span>
+        <span class="k">return</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">T_reward</span> <span class="o">+</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">hints_reward</span> <span class="o">+</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">atts_reward</span> <span class="o">+</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">G_reward</span></div>
+
+<div class="viewcode-block" id="Difficulty.sample_exercise_M_stats_per_tax"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.difficulty.Difficulty.sample_exercise_M_stats_per_tax">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sample_exercise_M_stats_per_tax</span><span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">,</span> <span class="n">current_iteration</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function samples the statistics [time, hints, attempts, grade] for a student when his/her tax. level is &#39;M&#39;.</span>
+<span class="sd">        Coefficients are selected according to the excel sheet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Stats are: (Time, #Hints, #Attempts, Grade)</span>
+        <span class="k">if</span> <span class="n">tax</span> <span class="o">==</span> <span class="s1">&#39;E&#39;</span> <span class="ow">and</span> <span class="n">std_gt</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;E0&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;EM&#39;</span><span class="p">,</span> <span class="s1">&#39;ME&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="n">tax</span> <span class="o">==</span> <span class="s1">&#39;E&#39;</span> <span class="ow">and</span> <span class="n">std_gt</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="n">tax</span> <span class="o">==</span> <span class="s1">&#39;E&#39;</span> <span class="ow">and</span> <span class="n">std_gt</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MH&#39;</span><span class="p">,</span> <span class="s1">&#39;HM&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;H1&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="n">tax</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span> <span class="ow">and</span> <span class="n">std_gt</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;E0&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;EM&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;ME&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&lt;=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tmh&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&lt;=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tmh&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;MH&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&lt;=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tmh&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;ME&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&gt;</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tmh&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&gt;</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tmh&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;MH&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">current_iteration</span> <span class="o">&gt;</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;Tmh&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="n">tax</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span> <span class="ow">and</span> <span class="n">std_gt</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HM&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;H1&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;This method samples only when taxonomy is E or M&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Numpy random functions are used for sampling between minimum and maximum.</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_H&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">t1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_max_H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_H&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">t2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_H&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">t3</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_max_H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_H&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">t4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_H&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">h1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_max_H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_H&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">h2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_H&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">h3</span> <span class="o">*</span> <span class="p">(</span>
+                                          <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_max_H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_H&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">h4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_H&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">a1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_max_H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_H&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">a2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_H&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">a3</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_max_H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_H&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">a4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_H&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">g1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_max_H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_H&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">g2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_H&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">g3</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_max_H&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_H&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">g4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="Difficulty.sample_exercise_H_stats_per_tax"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.difficulty.Difficulty.sample_exercise_H_stats_per_tax">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sample_exercise_H_stats_per_tax</span><span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">,</span> <span class="n">current_iteration</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function samples the statistics [time, hints, attempts, grade] for a student when his/her tax. level is &#39;H&#39;.</span>
+<span class="sd">        Coefficients are selected according to the excel sheet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Stats are: (Time, #Hints, #Attempts, Grade)</span>
+        <span class="k">if</span> <span class="n">tax</span> <span class="o">==</span> <span class="s1">&#39;E&#39;</span> <span class="ow">and</span> <span class="n">std_gt</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;E0&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;EM&#39;</span><span class="p">,</span> <span class="s1">&#39;ME&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;MH&#39;</span><span class="p">,</span> <span class="s1">&#39;HM&#39;</span><span class="p">]:</span>
+            <span class="c1"># Regardless of Tem</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">):</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;H1&#39;</span><span class="p">):</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="n">tax</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span> <span class="ow">and</span> <span class="n">std_gt</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;E0&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;EM&#39;</span><span class="p">,</span> <span class="s1">&#39;ME&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;MH&#39;</span><span class="p">,</span> <span class="s1">&#39;HM&#39;</span><span class="p">]:</span>
+            <span class="c1"># Regardless of Tmh</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">):</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;H1&#39;</span><span class="p">):</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="n">tax</span> <span class="o">==</span> <span class="s1">&#39;H&#39;</span> <span class="ow">and</span> <span class="n">std_gt</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;E0&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;EM&#39;</span><span class="p">,</span> <span class="s1">&#39;ME&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;MH&#39;</span><span class="p">,</span> <span class="s1">&#39;HM&#39;</span><span class="p">]:</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">):</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">std_gt</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;H1&#39;</span><span class="p">):</span>
+            <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">h3</span><span class="p">,</span> <span class="n">h4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+            <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">g3</span><span class="p">,</span> <span class="n">g4</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;This method samples only when taxonomy is E or M or H&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Numpy random functions are used for sampling between minimum and maximum.</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_M&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">t1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_max_M&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_M&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">t2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_M&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">t3</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_max_M&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;T_min_M&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">t4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_M&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">h1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_max_M&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_M&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">h2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_M&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">h3</span> <span class="o">*</span> <span class="p">(</span>
+                                          <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_max_M&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;hints_min_M&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">h4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_M&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">a1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_max_M&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_M&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">a2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_M&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">a3</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_max_M&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;atts_min_M&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">a4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_M&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">g1</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_max_M&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_M&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">g2</span><span class="p">,</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_M&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">g3</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_max_M&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;G_min_M&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">g4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="Difficulty.sample_stats"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.difficulty.Difficulty.sample_stats">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sample_stats</span><span class="p">(</span><span class="n">cur_tax_level_mapped</span><span class="p">,</span> <span class="n">std_gt_level_mapped</span><span class="p">,</span> <span class="n">current_iteration</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function samples the statistics [time, hints, attempts, grade] for a student for all taxonomies.</span>
+<span class="sd">        It also returns the total calculated difficulty reward.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cur_tax_level</span> <span class="o">=</span> <span class="n">inv_map_tax_level</span><span class="p">(</span><span class="n">cur_tax_level_mapped</span><span class="p">)</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Constants</span><span class="o">.</span><span class="n">NUM_TAX</span><span class="p">):</span>
+            <span class="c1"># Min difficulty is zero and max is 2</span>
+            <span class="c1"># When a student is of level E, the output exercise will be E,M, and H</span>
+            <span class="c1"># When a student is of level M, the output exercise will be M or H</span>
+            <span class="c1"># When a student is of level H, the output exercise is only H  </span>
+            <span class="n">single_stats</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># Maximum reward will be equal to 3</span>
+            <span class="k">if</span> <span class="n">cur_tax_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;E&#39;</span><span class="p">:</span>
+                <span class="n">single_stats</span> <span class="o">=</span> <span class="n">Difficulty</span><span class="o">.</span><span class="n">sample_exercise_E_stats_per_tax</span><span class="p">(</span><span class="n">cur_tax_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                          <span class="n">std_gt_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                          <span class="n">current_iteration</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+                <span class="n">reward</span> <span class="o">+=</span> <span class="n">Difficulty</span><span class="o">.</span><span class="n">calculate_stats_reward</span><span class="p">(</span><span class="o">*</span><span class="n">single_stats</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">)</span>
+
+                <span class="n">single_stats</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Difficulty</span><span class="o">.</span><span class="n">sample_exercise_M_stats_per_tax</span><span class="p">(</span><span class="n">cur_tax_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                               <span class="n">std_gt_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                               <span class="n">current_iteration</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+                <span class="c1"># reward[i] += Difficulty.calculate_stats_reward(*single_stats[4:], params, &#39;M&#39;)</span>
+
+                <span class="n">single_stats</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Difficulty</span><span class="o">.</span><span class="n">sample_exercise_H_stats_per_tax</span><span class="p">(</span><span class="n">cur_tax_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                               <span class="n">std_gt_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                               <span class="n">current_iteration</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+                <span class="c1"># reward[i] += Difficulty.calculate_stats_reward(*single_stats[8:], params, &#39;H&#39;)</span>
+
+            <span class="k">if</span> <span class="n">cur_tax_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span>
+                <span class="n">single_stats</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># reward[i] += len(single_stats) * 0.25</span>
+
+                <span class="n">single_stats</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Difficulty</span><span class="o">.</span><span class="n">sample_exercise_M_stats_per_tax</span><span class="p">(</span><span class="n">cur_tax_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                               <span class="n">std_gt_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                               <span class="n">current_iteration</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+                <span class="n">reward</span> <span class="o">+=</span> <span class="n">Difficulty</span><span class="o">.</span><span class="n">calculate_stats_reward</span><span class="p">(</span><span class="o">*</span><span class="n">single_stats</span><span class="p">[</span><span class="mi">4</span><span class="p">:],</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
+
+                <span class="n">single_stats</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Difficulty</span><span class="o">.</span><span class="n">sample_exercise_H_stats_per_tax</span><span class="p">(</span><span class="n">cur_tax_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                               <span class="n">std_gt_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                               <span class="n">current_iteration</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+                <span class="c1"># reward[i] += Difficulty.calculate_stats_reward(*single_stats[8:], params, &#39;H&#39;)</span>
+
+            <span class="k">if</span> <span class="n">cur_tax_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;H&#39;</span><span class="p">:</span>
+                <span class="n">single_stats</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># reward[i] += len(single_stats) * 0.25</span>
+
+                <span class="n">single_stats</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="c1"># reward[i] += len(single_stats) * 0.25</span>
+
+                <span class="n">single_stats</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Difficulty</span><span class="o">.</span><span class="n">sample_exercise_H_stats_per_tax</span><span class="p">(</span><span class="n">cur_tax_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                               <span class="n">std_gt_level_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                               <span class="n">current_iteration</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+                <span class="n">reward</span> <span class="o">+=</span> <span class="n">Difficulty</span><span class="o">.</span><span class="n">calculate_stats_reward</span><span class="p">(</span><span class="o">*</span><span class="n">single_stats</span><span class="p">[</span><span class="mi">8</span><span class="p">:],</span> <span class="n">params</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">)</span>
+
+            <span class="n">stats</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">single_stats</span><span class="p">)</span>
+
+        <span class="c1"># Returned dimension is 6x3x4. ie, 6 taxonomies, 3 exercises, with 4 values</span>
+        <span class="k">return</span> <span class="n">stats</span><span class="p">,</span> <span class="n">normalize_neg1_pos1</span><span class="p">(</span><span class="n">reward</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">Constants</span><span class="o">.</span><span class="n">NUM_TAX</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">Constants</span><span class="o">.</span><span class="n">NUM_TAX</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Difficulty.change_tax_level"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.difficulty.Difficulty.change_tax_level">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">change_tax_level</span><span class="p">(</span><span class="n">cur_tax_level</span><span class="p">,</span> <span class="n">new_tax_level</span><span class="p">,</span> <span class="n">delta_difficulties</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method changes the current taxonomy level by a delta vector of taxonomies.</span>
+<span class="sd">        Note that: the minimum taxonomy is &#39;E&#39; and the maximum taxonomy is &#39;H&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">delta_difficulties</span><span class="p">:</span>
+            <span class="n">new_tax_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cur_tax_level</span><span class="p">,</span> <span class="n">new_tax_level</span><span class="p">)</span>
+            <span class="n">new_tax_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">Constants</span><span class="o">.</span><span class="n">TAX_DIFFICULTIES</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">],</span> <span class="n">new_tax_level</span><span class="p">)</span>
+            <span class="n">new_tax_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">Constants</span><span class="o">.</span><span class="n">TAX_DIFFICULTIES</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">],</span> <span class="n">new_tax_level</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_tax_level</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, APPEAL
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

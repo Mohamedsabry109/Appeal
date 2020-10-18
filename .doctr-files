@@ -1,5 +1,10 @@
 ./Environment/env.html
 ./_modules/appeal_rl/agent.html
+./_modules/appeal_rl/environment/constants.html
+./_modules/appeal_rl/environment/difficulty.html
+./_modules/appeal_rl/environment/improvement.html
+./_modules/appeal_rl/environment/utils.html
+./_modules/appeal_rl/environment/vark.html
 ./_modules/index.html
 ./_sources/Environment/env.rst.txt
 ./_sources/index.rst.txt
