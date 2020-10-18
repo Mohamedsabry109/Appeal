@@ -10,6 +10,7 @@ import random
 import os
 
 
+
 class DQN:
     """
     The core of the reinforcement learning is our modified Deep Q-Network with multiple heads (in our case 7 heads);
