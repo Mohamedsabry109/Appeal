@@ -1,5 +1,5 @@
 ===
-env
+dqn
 ===
 
 .. automodule:: appeal_rl.dqn.dqn
