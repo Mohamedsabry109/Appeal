@@ -10,8 +10,6 @@ Welcome to appeal_rl's documentation!
    :maxdepth: 4
    :caption: Contents:
 
-   appeal_rl
-   modules
    installation
    usage
    release-history
