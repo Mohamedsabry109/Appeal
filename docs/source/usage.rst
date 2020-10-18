@@ -9,7 +9,7 @@ Start by importing Appeal project.
     import appeal_rl
 
 
-Shapping Your Agent in an Agent Module
+.. Shapping Your Agent in an Agent Module
 
-.. automodule:: appeal_rl.agent
-   :members:
+.. .. automodule:: appeal_rl.agent
+..    :members:
