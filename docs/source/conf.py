@@ -26,6 +26,7 @@ sys.path.insert(0, os.path.abspath('../appeal_rl/dqn'))
 sys.path.insert(0, os.path.abspath('../appeal_rl/env'))
 sys.path.insert(0, os.path.abspath('../appeal_rl'))
 #sys.path.insert(0, os.path.abspath('/home/mohamed/Appeal '))
+sys.path.insert(0, os.path.abspath('/Appeal '))
 
 
 # -- General configuration ------------------------------------------------

@@ -12,6 +12,7 @@ Welcome to appeal_rl's documentation!
 
    installation
    usage
+   Environment/env
    release-history
    min_versions
 
