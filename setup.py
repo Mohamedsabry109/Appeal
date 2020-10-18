@@ -41,7 +41,7 @@ setup(
     long_description=readme,
     author="APPEAL",
     author_email='mohamedsabry109@gmail.com',
-    url='https://github.com/mohamedsabry109/Appeal ',
+    url='https://github.com/mohamedsabry109/Appeal',
     python_requires='>={}'.format('.'.join(str(n) for n in min_version)),
     packages=find_packages(exclude=['docs', 'tests']),
     entry_points={

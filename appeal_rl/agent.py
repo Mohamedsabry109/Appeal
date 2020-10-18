@@ -1,8 +1,8 @@
 import os
 import torch
 import math
-from .dqn.model import Model
-from .env.constants import Constants
+from dqn.model import Model
+from env.constants import Constants
 
 
 class Agent:
