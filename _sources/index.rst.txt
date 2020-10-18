@@ -13,6 +13,7 @@ Welcome to appeal_rl's documentation!
    installation
    usage
    Environment/env
+   DQN/dqn
    release-history
    min_versions
 

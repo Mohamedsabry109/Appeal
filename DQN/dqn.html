@@ -1,0 +1,293 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>dqn &mdash; Appeal project 0.post45+g8d6aae5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Release History" href="../release-history.html" />
+    <link rel="prev" title="env" href="../Environment/env.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Appeal project
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post45+g8d6aae5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Environment/env.html">env</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">dqn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../min_versions.html">Minimum Version of Python and NumPy</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Appeal project</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>dqn</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/DQN/dqn.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-appeal_rl.dqn.dqn">
+<span id="dqn"></span><h1>dqn<a class="headerlink" href="#module-appeal_rl.dqn.dqn" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="appeal_rl.dqn.dqn.DQN">
+<em class="property">class </em><code class="sig-prename descclassname">appeal_rl.dqn.dqn.</code><code class="sig-name descname">DQN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">env</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/dqn.html#DQN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.dqn.DQN" title="Permalink to this definition">¶</a></dt>
+<dd><p>The core of the reinforcement learning is our modified Deep Q-Network with multiple heads (in our case 7 heads);
+one for each taxonomy level (6 levels) and one for VARK prediction. Total loss is the combined weighted loss from each head.
+This is a direct implementation of a multi-task learning architecture with a shared encoder.</p>
+<dl class="py method">
+<dt id="appeal_rl.dqn.dqn.DQN.decode_action">
+<code class="sig-name descname">decode_action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vark_action</span></em>, <em class="sig-param"><span class="n">taxonomies_action</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/dqn.html#DQN.decode_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.dqn.DQN.decode_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function decodes the action taken. For example: it converts a VARK of 4 to a VARK vector of [0100].</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="appeal_rl.dqn.dqn.DQN.get_action_value">
+<code class="sig-name descname">get_action_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em>, <em class="sig-param"><span class="n">vark_action</span></em>, <em class="sig-param"><span class="n">taxonomies_action</span></em>, <em class="sig-param"><span class="n">network</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/dqn.html#DQN.get_action_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.dqn.DQN.get_action_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function gets the current policy action value in a certain state using the policy network.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="appeal_rl.dqn.dqn.DQN.get_ep_greedy_action">
+<code class="sig-name descname">get_ep_greedy_action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em>, <em class="sig-param"><span class="n">network</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/dqn.html#DQN.get_ep_greedy_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.dqn.DQN.get_ep_greedy_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function uses a greedy policy to sample an action.
+It either gets the action with the maximum Q-value or selects a random action with probability (epsilon)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="appeal_rl.dqn.dqn.DQN.get_max_action_value">
+<code class="sig-name descname">get_max_action_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em>, <em class="sig-param"><span class="n">network</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/dqn.html#DQN.get_max_action_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.dqn.DQN.get_max_action_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function gets the maximum policy action value in a certain state using the policy network.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="appeal_rl.dqn.dqn.DQN.get_policy_action">
+<code class="sig-name descname">get_policy_action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em>, <em class="sig-param"><span class="n">network</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/dqn.html#DQN.get_policy_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.dqn.DQN.get_policy_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function gets the current policy action [action with highest Q-Value] in a certain state using the policy network.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="appeal_rl.dqn.dqn.DQN.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/dqn.html#DQN.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.dqn.DQN.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function trains the DQN network for a certain number of episodes with a max. unrolling depth.
+It also computes the statistics of the training process and sends them to Tensorboard for visualization purposes.</p>
+<p>Here is the scenario: It takes a step in the environemnt using eps. greedy policy.
+Then, it adds the obs, rewards, etc. to the replay memory.
+Then, it samples from the replay memory a batch of a certain size.
+Finally, it trains the policy network.
+Note that: after each number of steps, policy network parameters are copied to the target network.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="appeal_rl.dqn.dqn.DQN.train_single_batch">
+<code class="sig-name descname">train_single_batch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/dqn.html#DQN.train_single_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.dqn.DQN.train_single_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function trains the policy network using a single batch sampled from the replay memory.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-appeal_rl.dqn.model"></span><dl class="py class">
+<dt id="appeal_rl.dqn.model.Model">
+<em class="property">class </em><code class="sig-prename descclassname">appeal_rl.dqn.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_dim</span></em>, <em class="sig-param"><span class="n">num_taxonomies</span></em>, <em class="sig-param"><span class="n">delta_difficulties</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/model.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.model.Model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-appeal_rl.dqn.replay_memory"></span><dl class="py class">
+<dt id="appeal_rl.dqn.replay_memory.ReplayMemory">
+<em class="property">class </em><code class="sig-prename descclassname">appeal_rl.dqn.replay_memory.</code><code class="sig-name descname">ReplayMemory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/replay_memory.html#ReplayMemory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.replay_memory.ReplayMemory" title="Permalink to this definition">¶</a></dt>
+<dd><p>A buffer for the replay memory.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../release-history.html" class="btn btn-neutral float-right" title="Release History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../Environment/env.html" class="btn btn-neutral float-left" title="env" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, APPEAL
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

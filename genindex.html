@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; Appeal project 0.post42+g0597177 documentation</title>
+  <title>Index &mdash; Appeal project 0.post45+g8d6aae5 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post42+g0597177
+                0.post45+g8d6aae5
               </div>
             
           
@@ -92,6 +92,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Environment/env.html">env</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DQN/dqn.html">dqn</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release-history.html">Release History</a></li>
 <li class="toctree-l1"><a class="reference internal" href="min_versions.html">Minimum Version of Python and NumPy</a></li>
 </ul>
@@ -168,7 +169,9 @@
  | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
  | <a href="#V"><strong>V</strong></a>
  
 </div>
@@ -185,6 +188,29 @@
 </li>
       </ul></li>
       <li>
+    appeal_rl.dqn.dqn
+
+      <ul>
+        <li><a href="DQN/dqn.html#module-appeal_rl.dqn.dqn">module</a>
+</li>
+      </ul></li>
+      <li>
+    appeal_rl.dqn.model
+
+      <ul>
+        <li><a href="DQN/dqn.html#module-appeal_rl.dqn.model">module</a>
+</li>
+      </ul></li>
+      <li>
+    appeal_rl.dqn.replay_memory
+
+      <ul>
+        <li><a href="DQN/dqn.html#module-appeal_rl.dqn.replay_memory">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
     appeal_rl.environment.constants
 
       <ul>
@@ -198,8 +224,6 @@
         <li><a href="Environment/env.html#module-appeal_rl.environment.difficulty">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     appeal_rl.environment.improvement
 
@@ -248,10 +272,16 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="usage.html#appeal_rl.agent.Agent.decode_action">decode_action() (appeal_rl.agent.Agent method)</a>
+
+      <ul>
+        <li><a href="DQN/dqn.html#appeal_rl.dqn.dqn.DQN.decode_action">(appeal_rl.dqn.dqn.DQN method)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Environment/env.html#appeal_rl.environment.difficulty.Difficulty">Difficulty (class in appeal_rl.environment.difficulty)</a>
+</li>
+      <li><a href="DQN/dqn.html#appeal_rl.dqn.dqn.DQN">DQN (class in appeal_rl.dqn.dqn)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -260,13 +290,27 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="usage.html#appeal_rl.agent.Agent.get_action_value">get_action_value() (appeal_rl.agent.Agent method)</a>
+
+      <ul>
+        <li><a href="DQN/dqn.html#appeal_rl.dqn.dqn.DQN.get_action_value">(appeal_rl.dqn.dqn.DQN method)</a>
+</li>
+      </ul></li>
+      <li><a href="DQN/dqn.html#appeal_rl.dqn.dqn.DQN.get_ep_greedy_action">get_ep_greedy_action() (appeal_rl.dqn.dqn.DQN method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="usage.html#appeal_rl.agent.Agent.get_max_action_value">get_max_action_value() (appeal_rl.agent.Agent method)</a>
+
+      <ul>
+        <li><a href="DQN/dqn.html#appeal_rl.dqn.dqn.DQN.get_max_action_value">(appeal_rl.dqn.dqn.DQN method)</a>
 </li>
+      </ul></li>
       <li><a href="usage.html#appeal_rl.agent.Agent.get_policy_action">get_policy_action() (appeal_rl.agent.Agent method)</a>
+
+      <ul>
+        <li><a href="DQN/dqn.html#appeal_rl.dqn.dqn.DQN.get_policy_action">(appeal_rl.dqn.dqn.DQN method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -285,11 +329,19 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DQN/dqn.html#appeal_rl.dqn.model.Model">Model (class in appeal_rl.dqn.model)</a>
+</li>
       <li>
     module
 
       <ul>
         <li><a href="usage.html#module-appeal_rl.agent">appeal_rl.agent</a>
+</li>
+        <li><a href="DQN/dqn.html#module-appeal_rl.dqn.dqn">appeal_rl.dqn.dqn</a>
+</li>
+        <li><a href="DQN/dqn.html#module-appeal_rl.dqn.model">appeal_rl.dqn.model</a>
+</li>
+        <li><a href="DQN/dqn.html#module-appeal_rl.dqn.replay_memory">appeal_rl.dqn.replay_memory</a>
 </li>
         <li><a href="Environment/env.html#module-appeal_rl.environment.constants">appeal_rl.environment.constants</a>
 </li>
@@ -313,6 +365,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DQN/dqn.html#appeal_rl.dqn.replay_memory.ReplayMemory">ReplayMemory (class in appeal_rl.dqn.replay_memory)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -325,6 +385,18 @@
       <li><a href="Environment/env.html#appeal_rl.environment.difficulty.Difficulty.sample_exercise_M_stats_per_tax">sample_exercise_M_stats_per_tax() (appeal_rl.environment.difficulty.Difficulty static method)</a>
 </li>
       <li><a href="Environment/env.html#appeal_rl.environment.difficulty.Difficulty.sample_stats">sample_stats() (appeal_rl.environment.difficulty.Difficulty static method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DQN/dqn.html#appeal_rl.dqn.dqn.DQN.train">train() (appeal_rl.dqn.dqn.DQN method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="DQN/dqn.html#appeal_rl.dqn.dqn.DQN.train_single_batch">train_single_batch() (appeal_rl.dqn.dqn.DQN method)</a>
 </li>
   </ul></td>
 </tr></table>

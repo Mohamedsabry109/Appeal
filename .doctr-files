@@ -1,11 +1,16 @@
+./DQN/dqn.html
 ./Environment/env.html
 ./_modules/appeal_rl/agent.html
+./_modules/appeal_rl/dqn/dqn.html
+./_modules/appeal_rl/dqn/model.html
+./_modules/appeal_rl/dqn/replay_memory.html
 ./_modules/appeal_rl/environment/constants.html
 ./_modules/appeal_rl/environment/difficulty.html
 ./_modules/appeal_rl/environment/improvement.html
 ./_modules/appeal_rl/environment/utils.html
 ./_modules/appeal_rl/environment/vark.html
 ./_modules/index.html
+./_sources/DQN/dqn.rst.txt
 ./_sources/Environment/env.rst.txt
 ./_sources/index.rst.txt
 ./_sources/installation.rst.txt
