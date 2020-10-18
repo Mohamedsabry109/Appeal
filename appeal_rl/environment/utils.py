@@ -4,7 +4,7 @@ import sys
 from pprint import pprint
 
 from easydict import EasyDict as edict
-from environment.constants import Constants
+from .constants import Constants
 
 
 def parse_args():

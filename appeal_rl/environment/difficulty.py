@@ -1,7 +1,7 @@
-from environment.constants import Constants
+from .constants import Constants
 import numpy as np
-from environment.utils import inv_map_tax_level
-from environment.utils import normalize_neg1_pos1
+from .utils import inv_map_tax_level
+from .utils import normalize_neg1_pos1
 
 
 

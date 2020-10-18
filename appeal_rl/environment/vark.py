@@ -1,5 +1,5 @@
 import numpy as np
-from environment.utils import normalize_neg1_pos1
+from .utils import normalize_neg1_pos1
 
 
 class VARK:
