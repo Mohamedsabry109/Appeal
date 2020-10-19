@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>appeal_rl.environment.vark &mdash; Appeal project 0.post45+g8d6aae5 documentation</title>
+  <title>appeal_rl.environment.vark &mdash; Appeal project 0.post46+gb0774dc documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post45+g8d6aae5
+                0.post46+gb0774dc
               </div>
             
           
@@ -169,23 +169,82 @@
 <span class="sd">    (based on the time spent not based on the difference equation designed previously).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="VARK.get_num_differences"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.vark.VARK.get_num_differences">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_num_differences</span><span class="p">(</span><span class="n">current_VARK</span><span class="p">,</span> <span class="n">preferred_std_gt_VARK</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="n">current_VARK</span><span class="p">,</span> <span class="n">preferred_std_gt_VARK</span><span class="p">))</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is used to calculate the number of differences between the predicted VARK and the ground truth VARK.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_VARK : numpy array</span>
+<span class="sd">            current VARK output by the model.</span>
+
+<span class="sd">        preferred_std_gt_VARK : numpy array</span>
+
+<span class="sd">            student&#39;s ground truth VARK.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        diff : int</span>
+<span class="sd">            number of differences between the predicted VARK and the ground truth VARK.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="n">current_VARK</span><span class="p">,</span> <span class="n">preferred_std_gt_VARK</span><span class="p">))</span></div>
 
     <span class="c1"># @staticmethod</span>
     <span class="c1"># def calculate_VARK_reward(current_VARK, preferred_std_gt_VARK):</span>
     <span class="c1">#     num_differences = VARK.get_num_differences(current_VARK, preferred_std_gt_VARK)</span>
     <span class="c1">#     return -0.5 * num_differences + 1</span>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="VARK.calculate_VARK_reward"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.vark.VARK.calculate_VARK_reward">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">calculate_VARK_reward</span><span class="p">(</span><span class="n">time_spent</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">normalize_neg1_pos1</span><span class="p">(</span><span class="n">time_spent</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;time_spent_Tmin&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;time_spent_Tmax&#39;</span><span class="p">])</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is used to calculate the VARK reward based on the time spent in the lesson, less time means the output is the preffered VARK.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        time_spent : int</span>
+<span class="sd">            time spent by the student in a lesson.</span>
+
+<span class="sd">        params : dict</span>
+
+<span class="sd">            Arguments given in the config file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        reward : float</span>
+<span class="sd">            </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">normalize_neg1_pos1</span><span class="p">(</span><span class="n">time_spent</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;time_spent_Tmin&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;time_spent_Tmax&#39;</span><span class="p">])</span></div>
+
+
 
 <div class="viewcode-block" id="VARK.calculate_time_spent"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.vark.VARK.calculate_time_spent">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">calculate_time_spent</span><span class="p">(</span><span class="n">current_VARK</span><span class="p">,</span> <span class="n">preferred_std_gt_VARK</span><span class="p">,</span> <span class="n">T_min</span><span class="p">,</span> <span class="n">T_max</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Direct mapping from the designed excel sheet.</span>
+<span class="sd">        Sampling time spent based on the differences between current VARK and preffered VARK.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_VARK : numpy array. </span>
+<span class="sd">            current VARK predicted by the model.</span>
+
+<span class="sd">        preferred_std_gt_VARK : numpy array.</span>
+
+<span class="sd">            Preferred VARK by the student.</span>
+
+<span class="sd">        T_min : int</span>
+<span class="sd">            min time to be spent in a lesson</span>
+<span class="sd">        T_max : int</span>
+<span class="sd">            max time to be spend in a lesson </span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        time : int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_differences</span> <span class="o">=</span> <span class="n">VARK</span><span class="o">.</span><span class="n">get_num_differences</span><span class="p">(</span><span class="n">current_VARK</span><span class="p">,</span> <span class="n">preferred_std_gt_VARK</span><span class="p">)</span>
 

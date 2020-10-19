@@ -6,11 +6,6 @@ env
    :members:
 
 
-
-.. automodule:: appeal_rl.environment.utils
-   :members:
-
-
 .. automodule:: appeal_rl.environment.vark
    :members:
 

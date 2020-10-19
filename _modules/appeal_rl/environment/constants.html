@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>appeal_rl.environment.constants &mdash; Appeal project 0.post45+g8d6aae5 documentation</title>
+  <title>appeal_rl.environment.constants &mdash; Appeal project 0.post46+gb0774dc documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post45+g8d6aae5
+                0.post46+gb0774dc
               </div>
             
           
@@ -165,14 +165,32 @@
 <div class="viewcode-block" id="Constants"><a class="viewcode-back" href="../../../Environment/env.html#appeal_rl.environment.constants.Constants">[docs]</a><span class="k">class</span> <span class="nc">Constants</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class contains the Constants that are used throughout the project.</span>
+
+<span class="sd">    Class Variables</span>
+<span class="sd">    ---------------</span>
+
+<span class="sd">    NUM_TAX : int</span>
+<span class="sd">        The number of taxonomies.</span>
+<span class="sd">    TAX_DIFFICULTIES : dict</span>
+<span class="sd">        Dict mapping levels of a taxonomy to numbers {&#39;E&#39;: 0, &#39;M&#39;: 1, &#39;H&#39;: 2}.</span>
+<span class="sd">    INV_TAX_DIFFICULTIES : dict</span>
+<span class="sd">        Dict of taxonomy levels</span>
+<span class="sd">    NUM_TAX_DIFFICULTIES : int</span>
+<span class="sd">        number of levels of taxonomy difficulities, 3 as we have easy, medium, and hard    </span>
+<span class="sd">    STD_LEVELS : dict</span>
+<span class="sd">        Dict mapping student possible levels, ex: {&#39;E0&#39;: 0, &#39;E&#39;: 1, &#39;EM&#39;: 2, &#39;ME&#39;: 3, &#39;M&#39;: 4, &#39;MH&#39;: 5, &#39;H&#39;: 6, &#39;HM&#39;: 7, &#39;H1&#39;: 8}</span>
+<span class="sd">    INV_STD_LEVELS : dict </span>
+<span class="sd">        Dict of student&#39;s possible levels</span>
+<span class="sd">    NUM_STD_LEVEL : int </span>
+<span class="sd">        number of student&#39;s levels</span>
+<span class="sd">    DIFFICULTY_DIFF : dict</span>
+<span class="sd">        Dict contain difference in levels clusters</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-
-
     <span class="n">NUM_TAX</span> <span class="o">=</span> <span class="mi">6</span>
-
     <span class="n">TAX_DIFFICULTIES</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;E&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
     <span class="n">INV_TAX_DIFFICULTIES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">]</span>
     <span class="n">NUM_TAX_DIFFICULTIES</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">TAX_DIFFICULTIES</span><span class="p">)</span>
