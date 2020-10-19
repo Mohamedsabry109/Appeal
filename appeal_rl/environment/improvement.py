@@ -13,10 +13,32 @@ class Improvement:
     def calculate_speed_reward(cur_tax_level_mapped, std_gt_level_mapped, current_iteration, Tem, Tmh):
         """
         This function calculates the total [-1,1] normalized improvement speed reward based on the following (for each taxonomy):
-        - current taxonomy level
-        - student taxonomy level
-        - number of iterations the lesson was repeated
-        - Tem, Tmh are hyperparameters found in the designed excel sheet.
+
+        Parameters
+        ----------
+        cur_tax_level_mapped : dict
+            current taxonomies difficulties.
+
+        std_gt_level_mapped : dict
+
+            Current student level in each taxonomy.
+        
+        current_iteration : int
+            number of iteration to compelete a lesson
+
+        Tem : int
+            threshold for the number of allowed repittion in the easy exercises
+
+        Tmh : int
+            threshold for the number of allowed repittion in the medium exercises
+
+
+        Returns
+        -------
+
+        reward : float
+            
+
         """
         reward = 0
         for i in range(Constants.NUM_TAX):
@@ -43,6 +65,30 @@ class Improvement:
         If a student gets higher grade than a certain threshold, in a time less than a certain threshold,
         with number of hints/attempts lower than a certain threshold;
         then the student improves from a level cluster (E*, M*, H*) to another level cluster (M*, H*, H1).
+
+        Parameters
+        ----------
+        cur_tax_level : int
+            Current taxonomies' levels.
+
+        std_gt_level : dict
+
+            student ground truth levels.
+
+        observation : 
+
+        current_iteration : int
+            Number of iteration to complete a lessson
+
+        params : dict 
+            Arguments given by the configuration
+
+        Returns
+        -------
+
+        inv_student_level : dict
+            
+
         """
 
         def improve_due_to_repetition(cur_level, idx):

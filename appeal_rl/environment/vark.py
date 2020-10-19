@@ -10,6 +10,25 @@ class VARK:
 
     @staticmethod
     def get_num_differences(current_VARK, preferred_std_gt_VARK):
+        """
+        This function is used to calculate the number of differences between the predicted VARK and the ground truth VARK.
+        
+        Parameters
+        ----------
+        current_VARK : numpy array
+            current VARK output by the model.
+
+        preferred_std_gt_VARK : numpy array
+
+            student's ground truth VARK.
+
+        Returns
+        -------
+
+        diff : int
+            number of differences between the predicted VARK and the ground truth VARK.
+
+        """
         return np.sum(np.bitwise_xor(current_VARK, preferred_std_gt_VARK))
 
     # @staticmethod
@@ -19,12 +38,52 @@ class VARK:
 
     @staticmethod
     def calculate_VARK_reward(time_spent, params):
+        """
+        This function is used to calculate the VARK reward based on the time spent in the lesson, less time means the output is the preffered VARK.
+        
+        Parameters
+        ----------
+        time_spent : int
+            time spent by the student in a lesson.
+
+        params : dict
+
+            Arguments given in the config file.
+
+        Returns
+        -------
+
+        reward : float
+            
+
+        """
         return -1 * normalize_neg1_pos1(time_spent, params['time_spent_Tmin'], params['time_spent_Tmax'])
+
+
 
     @staticmethod
     def calculate_time_spent(current_VARK, preferred_std_gt_VARK, T_min, T_max):
         """
-        Direct mapping from the designed excel sheet.
+        Sampling time spent based on the differences between current VARK and preffered VARK.
+
+        Parameters
+        ----------
+        current_VARK : numpy array. 
+            current VARK predicted by the model.
+
+        preferred_std_gt_VARK : numpy array.
+
+            Preferred VARK by the student.
+
+        T_min : int
+            min time to be spent in a lesson
+        T_max : int
+            max time to be spend in a lesson 
+
+        Returns
+        -------
+
+        time : int
         """
         num_differences = VARK.get_num_differences(current_VARK, preferred_std_gt_VARK)
 

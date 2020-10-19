@@ -4,14 +4,32 @@ import os
 class Constants:
     """
     This class contains the Constants that are used throughout the project.
+
+    Class Variables
+    ---------------
+
+    NUM_TAX : int
+        The number of taxonomies.
+    TAX_DIFFICULTIES : dict
+        Dict mapping levels of a taxonomy to numbers {'E': 0, 'M': 1, 'H': 2}.
+    INV_TAX_DIFFICULTIES : dict
+        Dict of taxonomy levels
+    NUM_TAX_DIFFICULTIES : int
+        number of levels of taxonomy difficulities, 3 as we have easy, medium, and hard    
+    STD_LEVELS : dict
+        Dict mapping student possible levels, ex: {'E0': 0, 'E': 1, 'EM': 2, 'ME': 3, 'M': 4, 'MH': 5, 'H': 6, 'HM': 7, 'H1': 8}
+    INV_STD_LEVELS : dict 
+        Dict of student's possible levels
+    NUM_STD_LEVEL : int 
+        number of student's levels
+    DIFFICULTY_DIFF : dict
+        Dict contain difference in levels clusters
+    
     """
     def __init__(self):
         pass
 
-
-
     NUM_TAX = 6
-
     TAX_DIFFICULTIES = {'E': 0, 'M': 1, 'H': 2}
     INV_TAX_DIFFICULTIES = ['E', 'M', 'H']
     NUM_TAX_DIFFICULTIES = len(TAX_DIFFICULTIES)

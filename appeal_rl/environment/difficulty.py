@@ -4,8 +4,6 @@ from .utils import inv_map_tax_level
 from .utils import normalize_neg1_pos1
 
 
-
-
 class Difficulty:
     """
     This is the class responsible for everything related to calculating a new difficulty of a taxonomy along with the rewards.
@@ -15,9 +13,19 @@ class Difficulty:
     def calculate_difficulty_reward(cur_tax_level_mapped, std_gt_level_mapped):
         """
         This function calculates the total difficulty reward based on current taxonomies levels and student ground truth levels.
-        :param cur_tax_level_mapped: Array of current taxonomy levels written in letter form. i.e: E,M,H
-        :param std_gt_level_mapped: Array of student g.t. taxonomy levels written in letter form. i.e: E,M,H
-        :return: a [-1,1] normalized reward based on the designed excel sheet.
+        
+        Parameters
+        ----------
+
+        param cur_tax_level_mapped : Array
+            Array of current taxonomy levels written in letter form. i.e: E,M,H
+        param std_gt_level_mapped : Array
+            Array of student g.t. taxonomy levels written in letter form. i.e: E,M,H
+
+        Returns
+        -------
+        a [-1,1] normalized reward based on the designed excel sheet.
+        
         """
         reward = 0
         for i in range(Constants.NUM_TAX):
@@ -33,6 +41,26 @@ class Difficulty:
         """
         This function samples the statistics [time, hints, attempts, grade] for a student when his/her tax. level is 'E'.
         Coefficients are selected according to the excel sheet.
+
+        Parameters
+        ----------
+        tax : dict
+            current taxonomy levels predicted by the model
+
+        std_gt : dict 
+            current ground truth level of the student
+
+        current_iteration : int
+            current iteration per lesson
+
+        params : dict
+            Arguments dictionary given by the config files
+
+
+        Returns
+        -------
+        a list of statistics [Time, #Hints, #Attempts, Grade] for easy difficulty.
+
         """
         # Stats are: (Time, #Hints, #Attempts, Grade)
         if (tax, std_gt) == ('E', 'E0') and current_iteration <= params['Tem']:
@@ -96,7 +124,30 @@ class Difficulty:
         """
         This function calculates the [-1,1] normalized reward based on the statistics for a certain student.
         For example, large time to solve an exam will have a small or negative reward while small time will have a large positive reward.
-        :param type: is the current tax. level.
+
+        Parameters
+        ----------
+        T : int
+            Time taken to finish an exercise.
+
+        hints : int 
+            number of hints used in the exercise.
+
+        atts : 
+            number of attempts for an exercise.
+
+        G : int
+            Grade achieved for an exercise.
+
+        params : dict
+            Arguments dictionary given by the config files.
+        type : char
+            the current tax. level.
+
+        Returns
+        -------
+        float reward.
+
         """
         T_reward = -1 * normalize_neg1_pos1(T, params['T_min_' + type], params['T_max_' + type])
         hints_reward = -1 * normalize_neg1_pos1(hints, params['hints_min_' + type], params['hints_max_' + type])
@@ -109,6 +160,26 @@ class Difficulty:
         """
         This function samples the statistics [time, hints, attempts, grade] for a student when his/her tax. level is 'M'.
         Coefficients are selected according to the excel sheet.
+        
+        Parameters
+        ----------
+        tax : dict
+            current taxonomy levels predicted by the model
+
+        std_gt : dict 
+            current ground truth level of the student
+
+        current_iteration : int
+            current iteration per lesson
+
+        params : dict
+            Arguments dictionary given by the config files
+
+
+        Returns
+        -------
+        a list of statistics [Time, #Hints, #Attempts, Grade] for easy difficulty.
+
         """
         # Stats are: (Time, #Hints, #Attempts, Grade)
         if tax == 'E' and std_gt in ['E0', 'E', 'EM', 'ME']:
@@ -196,6 +267,27 @@ class Difficulty:
         """
         This function samples the statistics [time, hints, attempts, grade] for a student when his/her tax. level is 'H'.
         Coefficients are selected according to the excel sheet.
+        
+        Parameters
+        ----------
+        tax : dict
+            current taxonomy levels predicted by the model
+
+        std_gt : dict 
+            current ground truth level of the student
+
+        current_iteration : int
+            current iteration per lesson
+
+        params : dict
+            Arguments dictionary given by the config files
+
+
+        Returns
+        -------
+        a list of statistics [Time, #Hints, #Attempts, Grade] for easy difficulty.
+
+
         """
         # Stats are: (Time, #Hints, #Attempts, Grade)
         if tax == 'E' and std_gt in ['E0', 'E', 'EM', 'ME', 'M', 'MH', 'HM']:
@@ -273,6 +365,30 @@ class Difficulty:
         """
         This function samples the statistics [time, hints, attempts, grade] for a student for all taxonomies.
         It also returns the total calculated difficulty reward.
+        
+        Parameters
+        ----------
+        cur_tax_level_mapped : dict
+            current taxonomy levels predicted by the model
+
+        std_gt_level_mapped : dict 
+            current ground truth level of the student
+
+        current_iteration : int
+            current iteration per lesson
+
+        params : dict
+            Arguments dictionary given by the config files
+
+
+        Returns
+        -------
+        stats : nd list 
+            all statistics for all taxonomies
+
+        reward achieved in that lesson
+
+
         """
         cur_tax_level = inv_map_tax_level(cur_tax_level_mapped)
         stats = []
@@ -337,6 +453,22 @@ class Difficulty:
         """
         This method changes the current taxonomy level by a delta vector of taxonomies.
         Note that: the minimum taxonomy is 'E' and the maximum taxonomy is 'H'.
+
+        Parameters
+        ----------
+        cur_tax_level : dict
+            current taxonomy
+        new_tax_level : dict
+            new taxonomy if delta_difficulties are used
+
+        delta_difficulties : boolean
+            True is we uses delta_difficulties
+
+        Returns
+        -------
+
+        new_tax_level : dict
+            new taxonomy if delta_difficulties are used
         """
         if delta_difficulties:
             new_tax_level = np.add(cur_tax_level, new_tax_level)
