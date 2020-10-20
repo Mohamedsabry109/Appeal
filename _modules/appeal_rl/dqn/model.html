@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>appeal_rl.dqn.model &mdash; Appeal project 0.post46+gb0774dc documentation</title>
+  <title>appeal_rl.dqn.model &mdash; Appeal project 0.post48+g92850da documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post46+gb0774dc
+                0.post48+g92850da
               </div>
             
           
@@ -165,10 +165,22 @@
 <div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../../DQN/dqn.html#appeal_rl.dqn.model.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_dim</span><span class="p">,</span> <span class="n">num_taxonomies</span><span class="p">,</span> <span class="n">delta_difficulties</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param in_dim: Observation space dimensionality</span>
-<span class="sd">        :param num_taxonomies: Number of taxonomies</span>
-<span class="sd">        :param delta_difficulties: If true, then 5 Q-values representing the possible changes in difficulties will be</span>
-<span class="sd">         predicted. Else, 3 Q-values representing the absolute difficulties will be predicted.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        in_dim : int</span>
+<span class="sd">            input dimension, observations dimension </span>
+<span class="sd">        num_taxonomies : int</span>
+<span class="sd">            number of taxonomies, 6 in our case</span>
+
+<span class="sd">        delta_difficulties : boolean</span>
+<span class="sd">            True is we uses delta_difficulties, i.e 5 levels to represent difficulty, E, EM, M, MH, H or 3 levels E, M, H</span>
+<span class="sd">            If true, then 5 Q-values representing the possible changes in difficulties will be</span>
+<span class="sd">            predicted. Else, 3 Q-values representing the absolute difficulties will be predicted.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Model</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="c1"># Core dimensions are the inner dimensions of the neural network.</span>
@@ -190,13 +202,27 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">taxonomy_terminals</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">core_dims</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dim_taxonomy</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_taxonomies</span><span class="p">)])</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="nb">input</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.forward"><a class="viewcode-back" href="../../../DQN/dqn.html#appeal_rl.dqn.model.Model.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="nb">input</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input : numpy array</span>
+<span class="sd">            observation  </span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        vark_head : numpy array of dimension equals to VARK dimension</span>
+
+<span class="sd">        taxonomy_heads : numpy array of shape equals to number of taxonomies * 5 if delta_difficulties is True, 3 otherwise</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="p">(</span><span class="nb">input</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">vark_head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vark_terminal</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
         <span class="n">taxonomy_heads</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_taxonomies</span><span class="p">):</span>
             <span class="n">taxonomy_heads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">taxonomy_terminals</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">net</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">vark_head</span><span class="p">,</span> <span class="n">taxonomy_heads</span></div>
+        <span class="k">return</span> <span class="n">vark_head</span><span class="p">,</span> <span class="n">taxonomy_heads</span></div></div>
 </pre></div>
 
            </div>

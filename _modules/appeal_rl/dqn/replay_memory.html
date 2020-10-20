@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>appeal_rl.dqn.replay_memory &mdash; Appeal project 0.post46+gb0774dc documentation</title>
+  <title>appeal_rl.dqn.replay_memory &mdash; Appeal project 0.post48+g92850da documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post46+gb0774dc
+                0.post48+g92850da
               </div>
             
           
@@ -171,14 +171,28 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<div class="viewcode-block" id="ReplayMemory.clear"><a class="viewcode-back" href="../../../DQN/dqn.html#appeal_rl.dqn.replay_memory.ReplayMemory.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear the buffer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">vark_action</span><span class="p">,</span> <span class="n">taxonomies_action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span> <span class="n">done</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">appendleft</span><span class="p">((</span><span class="n">state</span><span class="p">,</span> <span class="n">vark_action</span><span class="p">,</span> <span class="n">taxonomies_action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span> <span class="n">done</span><span class="p">))</span>
+<div class="viewcode-block" id="ReplayMemory.add"><a class="viewcode-back" href="../../../DQN/dqn.html#appeal_rl.dqn.replay_memory.ReplayMemory.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">vark_action</span><span class="p">,</span> <span class="n">taxonomies_action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span> <span class="n">done</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        add state, action, reward, next state and done tuple to the buffer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">appendleft</span><span class="p">((</span><span class="n">state</span><span class="p">,</span> <span class="n">vark_action</span><span class="p">,</span> <span class="n">taxonomies_action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span> <span class="n">done</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+<div class="viewcode-block" id="ReplayMemory.sample"><a class="viewcode-back" href="../../../DQN/dqn.html#appeal_rl.dqn.replay_memory.ReplayMemory.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sample amini batch of a certain size from the buffer</span>
+
+<span class="sd">        Paramters</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        batch_size : size of the mini batch to be sampled </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

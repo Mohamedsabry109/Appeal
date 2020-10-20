@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dqn &mdash; Appeal project 0.post46+gb0774dc documentation</title>
+  <title>dqn &mdash; Appeal project 0.post48+g92850da documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post46+gb0774dc
+                0.post48+g92850da
               </div>
             
           
@@ -224,12 +224,49 @@ Note that: after each number of steps, policy network parameters are copied to t
 <span class="target" id="module-appeal_rl.dqn.model"></span><dl class="py class">
 <dt id="appeal_rl.dqn.model.Model">
 <em class="property">class </em><code class="sig-prename descclassname">appeal_rl.dqn.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_dim</span></em>, <em class="sig-param"><span class="n">num_taxonomies</span></em>, <em class="sig-param"><span class="n">delta_difficulties</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/model.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.model.Model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><dl class="py method">
+<dt id="appeal_rl.dqn.model.Model.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">input</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/model.html#Model.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.model.Model.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input</strong><span class="classifier">numpy array</span></dt><dd><p>observation</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>vark_head</strong><span class="classifier">numpy array of dimension equals to VARK dimension</span></dt><dd></dd>
+<dt><strong>taxonomy_heads</strong><span class="classifier">numpy array of shape equals to number of taxonomies * 5 if delta_difficulties is True, 3 otherwise</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
 
 <span class="target" id="module-appeal_rl.dqn.replay_memory"></span><dl class="py class">
 <dt id="appeal_rl.dqn.replay_memory.ReplayMemory">
 <em class="property">class </em><code class="sig-prename descclassname">appeal_rl.dqn.replay_memory.</code><code class="sig-name descname">ReplayMemory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/replay_memory.html#ReplayMemory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.replay_memory.ReplayMemory" title="Permalink to this definition">¶</a></dt>
 <dd><p>A buffer for the replay memory.</p>
+<dl class="py method">
+<dt id="appeal_rl.dqn.replay_memory.ReplayMemory.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em>, <em class="sig-param"><span class="n">vark_action</span></em>, <em class="sig-param"><span class="n">taxonomies_action</span></em>, <em class="sig-param"><span class="n">reward</span></em>, <em class="sig-param"><span class="n">next_state</span></em>, <em class="sig-param"><span class="n">done</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/replay_memory.html#ReplayMemory.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.replay_memory.ReplayMemory.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>add state, action, reward, next state and done tuple to the buffer</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="appeal_rl.dqn.replay_memory.ReplayMemory.clear">
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/replay_memory.html#ReplayMemory.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.replay_memory.ReplayMemory.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the buffer</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="appeal_rl.dqn.replay_memory.ReplayMemory.sample">
+<code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch_size</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/appeal_rl/dqn/replay_memory.html#ReplayMemory.sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#appeal_rl.dqn.replay_memory.ReplayMemory.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sample amini batch of a certain size from the buffer</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
